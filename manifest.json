@@ -11,10 +11,13 @@
   "host_permissions": [
     "https://outlook.office365.com/*",
     "https://outlook.office.com/*",
-    "https://mail.google.com/*"
+    "https://mail.google.com/*",
+    "https://*.ngrok-free.app/*",
+    "https://*.ngrok-free.dev/*"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {

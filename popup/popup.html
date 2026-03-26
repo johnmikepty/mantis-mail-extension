@@ -7,12 +7,129 @@
 </head>
 <body>
   <div id="app">
+
+    <!-- Header -->
     <header>
-      <h1>MantisBT</h1>
-      <a href="../settings/settings.html" target="_blank" id="btn-settings" title="Settings">⚙</a>
+      <div class="header-left">
+        <span class="header-logo">⚡</span>
+        <span class="header-title">MantisBT</span>
+      </div>
+      <div class="header-right">
+        <span id="mode-badge" class="mode-badge"></span>
+        <a href="../settings/settings.html" target="_blank" id="btn-settings" title="Settings">⚙</a>
+      </div>
     </header>
-    <div id="content">Loading...</div>
+
+    <!-- Dynamic content -->
+    <div id="content">
+      <div class="loading">
+        <div class="spinner"></div>
+        <span>Cargando…</span>
+      </div>
+    </div>
+
+    <!-- CREATE form (hidden by default, injected by JS) -->
+    <template id="tpl-create">
+      <form id="form-create">
+
+        <div class="email-pill" id="email-sender-pill"></div>
+
+        <div class="field">
+          <label>Título</label>
+          <input type="text" id="f-title" autocomplete="off" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Proyecto</label>
+            <select id="f-project"><option value="">Cargando…</option></select>
+          </div>
+          <div class="field">
+            <label>Categoría</label>
+            <select id="f-category" disabled><option value="">—</option></select>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Severidad</label>
+            <select id="f-severity">
+              <option value="10">Feature</option>
+              <option value="20">Trivial</option>
+              <option value="30">Texto</option>
+              <option value="40">Tweaks</option>
+              <option value="50" selected>Minor</option>
+              <option value="60">Major</option>
+              <option value="70">Crash</option>
+              <option value="80">Block</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Prioridad</label>
+            <select id="f-priority">
+              <option value="10">Ninguna</option>
+              <option value="20">Baja</option>
+              <option value="30" selected>Normal</option>
+              <option value="40">Alta</option>
+              <option value="50">Urgente</option>
+              <option value="60">Inmediata</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Descripción</label>
+          <textarea id="f-description" rows="5"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" id="btn-create">
+            Crear caso
+          </button>
+          <span id="create-status" class="form-status"></span>
+        </div>
+
+      </form>
+    </template>
+
+    <!-- NOTE form (hidden by default, injected by JS) -->
+    <template id="tpl-note">
+      <div id="form-note">
+
+        <div class="case-banner" id="note-case-banner">
+          <span class="case-icon">📋</span>
+          <div>
+            <div class="case-num" id="note-case-num"></div>
+            <div class="case-summary" id="note-case-summary">Cargando…</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Nota a agregar</label>
+          <textarea id="n-body" rows="5"></textarea>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label>Visibilidad</label>
+            <select id="n-view-state">
+              <option value="10">Pública</option>
+              <option value="50">Privada</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn btn-primary" id="btn-add-note">
+            Agregar nota
+          </button>
+          <span id="note-status" class="form-status"></span>
+        </div>
+
+      </div>
+    </template>
+
   </div>
-  <script src="popup.js"></script>
+  <script type="module" src="popup.js"></script>
 </body>
 </html>

@@ -1,28 +1,271 @@
-* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  width: 360px;
-  min-height: 200px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 13px;
-  background: #fff;
-  color: #1a1a1a;
+/* ── Variables ── */
+:root {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface2: #232636;
+  --border: #2e3248;
+  --accent: #5b6af0;
+  --accent-dim: #3d4ab8;
+  --green: #3ecf8e;
+  --red: #f05b5b;
+  --yellow: #f0c05b;
+  --text: #e2e4f0;
+  --text-dim: #7b82a8;
+  --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --sans: 'IBM Plex Sans', system-ui, sans-serif;
 }
 
+/* ── Base ── */
+body {
+  width: 360px;
+  min-height: 120px;
+  max-height: 580px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ── Header ── */
 header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background: #1a73e8;
-  color: #fff;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
-header h1 { font-size: 15px; font-weight: 600; }
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
 
-#btn-settings { color: #fff; text-decoration: none; font-size: 18px; }
+.header-logo { font-size: 15px; }
 
-#content { padding: 14px; }
+.header-title {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
 
-.warn { color: #b00020; }
-.warn a { color: #b00020; }
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#btn-settings {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 1;
+  transition: color 0.15s;
+}
+
+#btn-settings:hover { color: var(--text); }
+
+/* ── Mode badge ── */
+.mode-badge {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+.mode-badge.create {
+  background: rgba(91,106,240,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(91,106,240,0.3);
+}
+
+.mode-badge.note {
+  background: rgba(240,192,91,0.15);
+  color: var(--yellow);
+  border: 1px solid rgba(240,192,91,0.3);
+}
+
+/* ── Content wrapper ── */
+#content { padding: 14px; overflow-y: auto; max-height: 540px; }
+
+/* ── Loading ── */
+.loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Warn ── */
+.warn {
+  padding: 12px;
+  background: rgba(240,91,91,0.08);
+  border: 1px solid rgba(240,91,91,0.2);
+  border-radius: 6px;
+  color: var(--red);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.warn a { color: var(--accent); }
+
+/* ── Email pill ── */
+.email-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  margin-bottom: 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.email-pill::before { content: '✉'; font-size: 12px; flex-shrink: 0; }
+
+/* ── Case banner ── */
+.case-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(240,192,91,0.06);
+  border: 1px solid rgba(240,192,91,0.2);
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.case-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+.case-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--yellow);
+}
+
+.case-summary {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 270px;
+}
+
+/* ── Fields ── */
+.field { margin-bottom: 11px; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 11px;
+}
+
+.field-row .field { margin-bottom: 0; }
+
+label {
+  display: block;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+select,
+textarea {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 12px;
+  padding: 7px 9px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+}
+
+textarea { resize: none; line-height: 1.5; }
+
+select { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237b82a8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; padding-right: 24px; }
+
+select:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── Form actions ── */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.form-status {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-dim);
+}
+
+.form-status.ok  { color: var(--green); }
+.form-status.err { color: var(--red); }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: 5px;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: var(--accent-dim); }

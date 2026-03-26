@@ -2,11 +2,494 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings — Mail to MantisBT</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #232636;
+      --border: #2e3248;
+      --accent: #5b6af0;
+      --accent-dim: #3d4ab8;
+      --green: #3ecf8e;
+      --red: #f05b5b;
+      --text: #e2e4f0;
+      --text-dim: #7b82a8;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0;
+    }
+
+    /* ── Layout ── */
+    .shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sidebar-brand {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .sidebar-brand .logo {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .sidebar-brand .version {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .nav-item:hover { color: var(--text); background: var(--surface2); }
+
+    .nav-item.active {
+      color: var(--accent);
+      border-left-color: var(--accent);
+      background: rgba(91,106,240,0.08);
+    }
+
+    .nav-icon { font-size: 15px; width: 18px; text-align: center; }
+
+    /* ── Main ── */
+    .main {
+      padding: 36px 48px;
+      overflow-y: auto;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .card-desc {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── Form fields ── */
+    .field { margin-bottom: 18px; }
+    .field:last-child { margin-bottom: 0; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="password"],
+    textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 12.5px;
+      padding: 9px 12px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input:focus, textarea:focus { border-color: var(--accent); }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 5px;
+    }
+
+    .field-hint code {
+      font-family: var(--mono);
+      background: var(--surface2);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 10.5px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 5px;
+      font-family: var(--sans);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dim); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-dim); }
+
+    .btn-danger { background: transparent; color: var(--red); border: 1px solid var(--red); }
+    .btn-danger:hover { background: rgba(240,91,91,0.1); }
+
+    .btn-sm { padding: 5px 10px; font-size: 11.5px; }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      align-items: center;
+    }
+
+    /* ── Status badge ── */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-family: var(--mono);
+      padding: 3px 8px;
+      border-radius: 3px;
+    }
+
+    .status-badge.ok { background: rgba(62,207,142,0.12); color: var(--green); }
+    .status-badge.fail { background: rgba(240,91,91,0.12); color: var(--red); }
+    .status-badge.idle { background: var(--surface2); color: var(--text-dim); }
+
+    /* ── Templates ── */
+    .template-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .template-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .template-item-info { flex: 1; min-width: 0; }
+
+    .template-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .template-preview {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .template-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+    /* ── Template editor modal ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.65);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 28px;
+      width: 560px;
+      max-width: 95vw;
+    }
+
+    .modal-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .vars-hint {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: var(--bg);
+      border-radius: 5px;
+      border: 1px solid var(--border);
+    }
+
+    .vars-hint p { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; }
+
+    .var-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .var-chip {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2px 7px;
+      color: var(--accent);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+
+    .var-chip:hover { background: rgba(91,106,240,0.15); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: all 0.2s;
+      pointer-events: none;
+      z-index: 200;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.ok { background: rgba(62,207,142,0.15); color: var(--green); border: 1px solid rgba(62,207,142,0.3); }
+    .toast.fail { background: rgba(240,91,91,0.15); color: var(--red); border: 1px solid rgba(240,91,91,0.3); }
+
+    /* ── Empty state ── */
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Settings</h1>
-  <p>TODO: settings form (MantisBT URL, API token, agent name, templates CRUD)</p>
-  <script src="settings.js"></script>
+
+<div class="shell">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo">MantisBT</div>
+      <div class="version">mail extension v0.1</div>
+    </div>
+    <div class="nav-item active" data-section="connection">
+      <span class="nav-icon">🔗</span> Connection
+    </div>
+    <div class="nav-item" data-section="templates">
+      <span class="nav-icon">📄</span> Templates
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main">
+
+    <!-- ── Connection ── -->
+    <section id="section-connection" class="section active">
+      <div class="section-title">Connection</div>
+
+      <div class="card">
+        <div class="card-title">MantisBT Server</div>
+        <div class="card-desc">URL base de tu instancia y el API token para autenticar las peticiones.</div>
+
+        <div class="field">
+          <label>MantisBT URL</label>
+          <input type="url" id="mantis-url" placeholder="https://bugs.tuempresa.com" />
+          <div class="field-hint">Sin barra al final. Se usará como base para la REST API.</div>
+        </div>
+
+        <div class="field">
+          <label>API Token</label>
+          <input type="password" id="api-token" placeholder="••••••••••••••••••••••••••••••••" />
+          <div class="field-hint">
+            Perfil → Administrar tokens de API en MantisBT.
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-test">
+            <span>⚡</span> Probar conexión
+          </button>
+          <button class="btn btn-ghost" id="btn-save-conn">
+            Guardar
+          </button>
+          <span id="conn-status" class="status-badge idle">—</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Agente</div>
+        <div class="card-desc">Nombre que aparece al enviar respuestas o notas desde la extensión.</div>
+        <div class="field">
+          <label>Nombre del agente</label>
+          <input type="text" id="agent-name" placeholder="Soporte Técnico" />
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-save-agent">Guardar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Templates ── -->
+    <section id="section-templates" class="section">
+      <div class="section-title">Templates de respuesta</div>
+
+      <div class="card">
+        <div class="card-title">Mis templates</div>
+        <div class="card-desc">
+          Usá <code>{{case_id}}</code>, <code>{{project}}</code>, <code>{{reporter}}</code>,
+          <code>{{date}}</code>, <code>{{agent_name}}</code>, <code>{{case_url}}</code>
+          como variables dinámicas.
+        </div>
+
+        <div class="template-list" id="template-list">
+          <!-- rendered by JS -->
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-new-template">
+            <span>＋</span> Nuevo template
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ── Template editor modal ── -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Nuevo template</div>
+
+    <div class="field">
+      <label>Nombre del template</label>
+      <input type="text" id="tpl-name" placeholder="Ej: Respuesta inicial, Cierre de caso…" />
+    </div>
+
+    <div class="field">
+      <label>Asunto del correo</label>
+      <input type="text" id="tpl-subject" placeholder="Ej: [CASE-{{case_id}}] Tu solicitud fue recibida" />
+    </div>
+
+    <div class="field">
+      <label>Cuerpo del correo</label>
+      <textarea id="tpl-body" rows="7" placeholder="Hola,&#10;&#10;Tu caso {{case_id}} fue registrado..."></textarea>
+      <div class="vars-hint">
+        <p>Variables disponibles — click para insertar:</p>
+        <div class="var-chips">
+          <span class="var-chip" data-var="{{case_id}}">{{case_id}}</span>
+          <span class="var-chip" data-var="{{case_url}}">{{case_url}}</span>
+          <span class="var-chip" data-var="{{project}}">{{project}}</span>
+          <span class="var-chip" data-var="{{category}}">{{category}}</span>
+          <span class="var-chip" data-var="{{priority}}">{{priority}}</span>
+          <span class="var-chip" data-var="{{reporter}}">{{reporter}}</span>
+          <span class="var-chip" data-var="{{date}}">{{date}}</span>
+          <span class="var-chip" data-var="{{agent_name}}">{{agent_name}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-save-template">Guardar template</button>
+      <button class="btn btn-ghost" id="btn-cancel-modal">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script src="settings.js"></script>
 </body>
 </html>

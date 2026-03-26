@@ -1,7 +1,7 @@
 # Project Context — Mail to MantisBT
 
 ## Status
-**Phase:** Initial setup
+**Phase:** Phase 1 — in progress
 **Last updated:** 2026-03-17
 
 ## Architecture Decisions
@@ -24,11 +24,15 @@ For Outlook 365 and Gmail, the extension clicks the native "Reply" button progra
 ## Roadmap
 
 ### Phase 1 — Core (Week 1)
-- [ ] manifest.json with correct permissions
+- [x] manifest.json with correct permissions
 - [ ] content.js: DOM extraction for Outlook 365
 - [ ] popup: CREATE mode (new issue form)
 - [ ] MantisBT API integration: create issue
-- [ ] Settings: URL + token storage
+- [x] Settings: URL + token + agent name storage
+- [x] Settings: template CRUD (name, subject, body, variables)
+- [x] popup: CREATE mode (form pre-llenado, dropdowns proyectos/categorías)
+- [x] popup: NOTE mode (detecta [CASE-XXXX], carga caso, agrega nota)
+- [x] mantis-api.js: getProjects, getCategories, createIssue, getIssue, addNote
 
 ### Phase 2 — Full features (Week 2)
 - [ ] content.js: DOM extraction for Gmail
